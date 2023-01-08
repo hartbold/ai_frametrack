@@ -13,6 +13,11 @@ instance/
 .coverage
 htmlcov/
 
+debug.log
+last_page
+retrieved_videos
+current_episode
+
 dist/
 build/
 *.egg-info/

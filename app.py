@@ -1,43 +1,38 @@
+from objects.TwitterBot import TwitterBot
+from objects.VideoScrapper import VideoScrapper
+from objects.FrameSaver import FrameSaver
 import os
-import cv2
-import openai
-# from flask import Flask
 
-videopath = './videos/01-01.mp4'
+from dotenv import load_dotenv
+load_dotenv()
 
-""" vidcap = cv2.VideoCapture(videopath)
-success, image = vidcap.read()
-count = 0
-while success:
-  cv2.imwrite("frame%d.jpg" % count, image)
-  success, image = vidcap.read()
-  count = 1 """
-
-from moviepy.editor import VideoFileClip
-vid = VideoFileClip(videopath)
-vid.write_images_sequence('./frames/frame_%04d.jpg', 0.1)
+envars = {
+  'f_ix' : str(os.getenv("SERVER_FILE_PATH")),
+  'v_folder' : str(os.getenv("SERVER_FOLDER_VID_PATH")),
+  'f_folder' : str(os.getenv("SERVER_FOLDER_FRAMES_PATH"))
+}
 
 '''
-# app = Flask(__name__)
-openai.api_key = os.getenv("OPENAI_API_KEY")
-videopath = './static/01-01.mp4'
 
-vidcap = cv2.VideoCapture(videopath)
-success, image = vidcap.read()
-count = 0
-while success:
-  cv2.imwrite("frame%d.jpg" % count, image)
-  success, image = vidcap.read()
-  count = 1
-
-# Analyze the whole video using the OpenAI API
-video = openai.Video(videopath)
-response = openai.VideoClassify().predict(video=video)
-best_frames = response['best_frames']
-
-# Write the best frames to disk using the Python library moviepy 
-from moviepy.editor import VideoFileClip
-vid = VideoFileClip(videopath)
-vid.write_images_sequence('./frames/frame_%04d.jpg', best_frames)
 '''
+
+n_frames = os.listdir(envars['f_folder'])
+
+tw = TwitterBot()
+
+if len(n_frames) > 0:
+
+  tw.publish()
+
+else:
+  vs = VideoScrapper(envars['f_ix'], envars['v_folder'])
+  vs.save_video()
+
+  vt = FrameSaver(envars['v_folder'], envars['f_folder'])
+  vt.save_frames()
+
+  # Todo OK - actualizamos el fichero para leer el próximo video
+  vs.update_file()
+
+  tw.publish()
 
