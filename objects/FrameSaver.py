@@ -1,3 +1,4 @@
+from config import CONF_NAME_VIDEO, CONF_PATH_FOLDER_FRAMES, CONF_PATH_FOLDER_VIDEOS
 import cv2
 import os
 
@@ -8,28 +9,28 @@ from objects.Logs import Logs as log
 
 class FrameSaver:
 
-    VIDEO_NAME = "video.mp4"
-    frames_path = ''
-    videos_path = ''
-
-    def __init__(self, videos_path, frames_path):
-        self.frames_path = frames_path
-        self.videos_path = videos_path
+    def __init__(self):
         pass
 
     def save_frames(self):
-        v_path = self.videos_path + FrameSaver.VIDEO_NAME
+        v_path = CONF_PATH_FOLDER_VIDEOS + CONF_NAME_VIDEO
 
         try:
             log.msg("treat_video (Treating: "+v_path+")")
             vid = VideoFileClip(v_path)
-            vid.write_images_sequence(self.frames_path + 'frame_%04d.jpg', 0.008)
-            log.msg("treat_video (Frames saved at: "+self.frames_path+")")
+            vid.write_images_sequence(CONF_PATH_FOLDER_FRAMES + 'frame_%04d.jpg', 0.008)
+            log.msg("treat_video (Frames saved at: "+CONF_PATH_FOLDER_FRAMES+")")
 
-            # self.delete_blurry_images(self.frames_path)
+            # self.delete_blurry_images(CONF_PATH_FOLDER_FRAMES)
 
         except:
             log.error("treat_video (Couldnt retrieve all frames)")
+
+        # Delete video
+        try:
+            os.remove(v_path)
+        except:
+            log.error("treat_video (Couldnt delete video)")
 
     @staticmethod
     def variance_of_laplacian(image):

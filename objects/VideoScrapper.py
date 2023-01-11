@@ -1,16 +1,16 @@
+from email import header
 import json
 from os.path import exists
 from urllib.request import urlopen, Request, urlretrieve
 from bs4 import BeautifulSoup as soup
 import requests
+from config import CONF_IX_FIRST_PAGE, CONF_IX_FIRST_VIDEO, CONF_NAME_VIDEO, CONF_PATH_FILE_CURRENT_VIDEO_META, CONF_PATH_FILE_IX, CONF_PATH_FILE_VIDEO_URLS, CONF_PATH_FOLDER_VIDEOS
 
 from objects.Logs import Logs as log
-from objects.FrameSaver import FrameSaver
-
 
 class VideoScrapper:
 
-    START_PAGE = 128 # Total paginas paginador
+    BASE_URL_3P = 'http://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint='
     BASE_URL_TV3 = 'https://www.ccma.cat'
     URL_TV3_PATH = '/tv3/el-cor-de-la-ciutat/capitols/?pagina='
     HEADERS = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
@@ -19,36 +19,35 @@ class VideoScrapper:
                'Accept-Encoding': 'none',
                'Accept-Language': 'en-US,en;q=0.8',
                'Connection': 'keep-alive'}
-    URL_3P = 'http://dinamics.ccma.cat/pvideo/media.jsp?media=video&version=0s&idint='
 
-    file_path = ''
-    videos_path = ''
     last_v_page = -1
     last_v_ix = -1
 
-    def __init__(self, file_path, videos_path):
+    def __init__(self):
 
-        page = requests.get(VideoScrapper.BASE_URL_TV3)
+        page = requests.get(VideoScrapper.BASE_URL_TV3, headers=self.HEADERS)
         if page.status_code != 200:
             log.error("VideoScrapper (" + VideoScrapper.BASE_URL_TV3 + ' is down.)')
             quit()
 
-        self.file_path = file_path
-        self.videos_path = videos_path
+        page = requests.get(VideoScrapper.BASE_URL_3P, headers=self.HEADERS)
+        if page.status_code != 400:
+            log.error("VideoScrapper (" + VideoScrapper.BASE_URL_3P + ' is down.)')
+            quit()
 
-        file = open(self.file_path, "r")
+        file = open(CONF_PATH_FILE_IX, "r")
         f_cont = file.read().split('\n')
         file.close()
 
         self.last_v_page = int(f_cont[0])
         self.last_v_ix = int(f_cont[1])
 
-        if self.last_v_page > VideoScrapper.START_PAGE:
-            self.last_v_page = VideoScrapper.START_PAGE
+        if self.last_v_page > CONF_IX_FIRST_PAGE:
+            self.last_v_page = CONF_IX_FIRST_PAGE
 
     def save_video(self, save_prod=True):
 
-        save_path = self.videos_path + FrameSaver.VIDEO_NAME
+        save_path = CONF_PATH_FOLDER_VIDEOS + CONF_NAME_VIDEO
 
         url_3p = self.get_video_3p_url()
         log.msg("save_video (Downloading: " + url_3p + ")")
@@ -82,10 +81,10 @@ class VideoScrapper:
 
         # --- ⚠ Página finalizada, leemos la actual y modifico valores para editar fichero
         if last_ix == 0:
-            self.last_v_ix = -1 # Último elemento página nueva
+            self.last_v_ix = CONF_IX_FIRST_VIDEO # Último elemento página nueva
             self.last_v_page = last_page - 1 # Página nueva anterior a la actual
 
-        if last_ix == -1:
+        if last_ix == CONF_IX_FIRST_VIDEO:
             last_ix = len(divs) - 1 # Nueva página, leemos el último elemento (los elementos vienen ordenador DESC)
             self.last_v_ix = last_ix - 1
         else:
@@ -130,7 +129,7 @@ class VideoScrapper:
             log.error('get_video_3p_url (Cant find video ID - Empty)')
             return ''
 
-        req = Request(VideoScrapper.URL_3P + video_id, None, VideoScrapper.HEADERS)
+        req = Request(VideoScrapper.BASE_URL_3P + video_id, None, VideoScrapper.HEADERS)
         resp = urlopen(req)
         r_json = json.loads(resp.read())
 
@@ -149,33 +148,39 @@ class VideoScrapper:
             durada = r_json['informacio']['durada']['text']
             dataemisio = r_json['informacio']['data_emissio']['text']
 
-            file = open("./current_episode", "w")
+            file = open(CONF_PATH_FILE_CURRENT_VIDEO_META, "w")
             file.write(title + "\nDurada: " + durada + " - Emissio: " + dataemisio + "")
             file.close()
-
-            
 
         except:
             log.error('get_video_3p_url (Cant retrieve metadata)')
         # ---
 
-        url_obj = None
-        try:
-            url_obj = urls[0]
-        except:
+        url_out = ''
+        for urldic in urls:
+
+            if url_out != '':
+                pass
+
             try:
-                url_obj = urls[1]
+                url_video = urldic['file']
+
+                r = requests.get(url_video, timeout=10)
+
+                if r.status_code != 200:
+                    log.error('get_video_3p_url (Cant retrieve video URL='+url_video+' in 10)')
+                    pass
+
+                url_out = url_video
+
+                file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
+                file.write(url_out)
+                file.close()
+
             except:
-                url_obj = None
-
-        if type (url_obj) == None:
-            log.error('get_video_3p_url (Cant retrieve video URL)')
-            return ''
-
-        url_out = url_obj['file']
-        file = open("./retrieved_videos", "a")
-        file.write(url_out)
-        file.close()
+                log.error(urldic)
+                log.error('get_video_3p_url (Cant get `file` from urldic)')
+                pass
 
         return url_out
 
@@ -183,7 +188,7 @@ class VideoScrapper:
         return
 
     def update_file(self):
-        file = open(self.file_path, "w")
+        file = open(CONF_PATH_FILE_IX, "w")
         # last_v_page y last_v_ix SE MODIFICAN en ⚠ get_video_url
         str_2_upd = str(self.last_v_page) + "\n" + str(self.last_v_ix)
         file.write(str_2_upd)

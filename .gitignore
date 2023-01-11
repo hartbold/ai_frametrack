@@ -17,6 +17,8 @@ debug.log
 last_page
 retrieved_videos
 current_episode
+current_ix
+all_videos
 
 dist/
 build/

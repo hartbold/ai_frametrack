@@ -5,3 +5,6 @@ pip list
 pip install bs4
 pip install tweepy
 pip install python-dotenv
+pip install opencv-python
+pip install moviepy
+pip install tweepy
