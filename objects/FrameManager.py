@@ -38,7 +38,7 @@ class FrameManager:
         os.remove(CONF_PATH_FOLDER_FRAMES+frame_path)
         return True
 
-    @staticmethod
+    # @staticmethod
     # def variance_of_laplacian(image):
     #     return cv2.Laplacian(image, cv2.CV_64F).var()
 
