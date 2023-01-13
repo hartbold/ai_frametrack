@@ -1,30 +1,32 @@
 from config import CONF_PATH_FOLDER_FRAMES
 from objects.TwitterBot import TwitterBot
 from objects.VideoScrapper import VideoScrapper
-from objects.FrameSaver import FrameSaver
-import os
+from objects.FrameManager import FrameManager
+from objects.Logs import Logs as log
 
-'''
-
-'''
-
-n_frames = os.listdir(CONF_PATH_FOLDER_FRAMES)
 
 tw = TwitterBot()
+vt = FrameManager()
 
-if len(n_frames) > 0:
+frames_tupload = vt.get_next_frames()
 
-  tw.publish()
+if len(frames_tupload) <= 0:
+  # No more frames, leemos un nuevo video
+  log.msg('app (No more frames)')
 
-else:
   vs = VideoScrapper()
-  vs.save_video()
+  video_path = vs.save_video()
+  vt.save_frames(video_path)
 
-  vt = FrameSaver()
-  vt.save_frames()
-
-  # Todo OK - actualizamos el fichero para leer el próximo video
+  frames_tupload = vt.get_next_frames()
   vs.update_file()
+else:
+  log.msg('app (Still frames)')
 
-  tw.publish()
+# Publish
+result = tw.publish(frames_tupload)
+
+if result:
+  for i in frames_tupload:
+    vt.delete_frame(i)
 

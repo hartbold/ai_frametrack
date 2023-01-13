@@ -1,11 +1,10 @@
-from email import header
 import json
+import requests
+
 from os.path import exists
 from urllib.request import urlopen, Request, urlretrieve
 from bs4 import BeautifulSoup as soup
-import requests
-from config import CONF_IX_FIRST_PAGE, CONF_IX_FIRST_VIDEO, CONF_NAME_VIDEO, CONF_PATH_FILE_CURRENT_VIDEO_META, CONF_PATH_FILE_IX, CONF_PATH_FILE_VIDEO_URLS, CONF_PATH_FOLDER_VIDEOS
-
+from config import *
 from objects.Logs import Logs as log
 
 class VideoScrapper:
@@ -60,7 +59,7 @@ class VideoScrapper:
 
         log.msg('save_video (Saved)')
 
-        return True
+        return CONF_PATH_FOLDER_VIDEOS + CONF_NAME_VIDEO
 
     def scrap(self, url):
         req = Request(url, None, VideoScrapper.HEADERS)
@@ -146,10 +145,10 @@ class VideoScrapper:
         try:
             title = r_json['informacio']['titol']
             durada = r_json['informacio']['durada']['text']
-            dataemisio = r_json['informacio']['data_emissio']['text']
+            dataemisio = r_json['informacio']['data_emissio']['text'].split()
 
             file = open(CONF_PATH_FILE_CURRENT_VIDEO_META, "w")
-            file.write(title + "\nDurada: " + durada + " - Emissio: " + dataemisio + "")
+            file.write(title + "\nDurada: " + durada + " - Emissio: " + dataemisio[0] + "")
             file.close()
 
         except:

@@ -1,39 +1,56 @@
-from objects.Logs import Logs as log
 import os
-import json
-from requests_oauthlib import OAuth1Session
+import tweepy
 
-from dotenv import load_dotenv
-load_dotenv()
-envars = {
-  'f_folder' : str(os.getenv("SERVER_FOLDER_FRAMES_PATH")),
-
-  'tw_public' : str(os.getenv("TW_CON_KEY")),
-  'tw_private' : str(os.getenv("TW_CON_KEY_SEC")),
-  'tw_tok' : str(os.getenv("TW_ACC_TOK")),
-  'tw_tok_private' : str(os.getenv("TW_ACC_TOK_SEC")),
-  'tw_cli_id' : str(os.getenv("TW_CLI_ID")),
-  'tw_callback' : str(os.getenv("TW_CALLBACK_URL")),
-}
+from objects.Logs import Logs as log
+from config import *
 
 class TwitterBot():
 
     REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token?oauth_callback=oob&x_auth_access_type=write"
-
-    frames_path = ''
-
-    consumer_key = '',
-    consumer_secret = ''
+    api = None
 
     def __init__(self) -> None:
 
-        self.consumer_key = envars['tw_tok']
-        self.consumer_secret = envars['tw_tok_private']
-        self.frames_path = envars['f_folder']
+      auth = tweepy.auth.OAuthHandler(CONF_TW_CONSUMER_KEY, CONF_TW_CONSUMER_SECRET)
+      auth.set_access_token(CONF_TW_ACCESS_TOKEN, CONF_TW_ACCESS_TOKEN_SECRET)
 
-        pass
+      api = tweepy.API(auth)
 
-    def publish(self):
-        # log.msg('')
-        return True
+      try:
+          api.verify_credentials()
+          log.msg("TwitterBot (Authentication OK)")
+      except:
+          log.error("TwitterBot (Error during authentication)")
+          quit()
 
+      self.api = api
+
+      pass
+
+    def publish(self, frames):
+
+        try:
+
+          media_ids = []
+
+          for filename in frames:
+              res = self.api.media_upload(CONF_PATH_FOLDER_FRAMES + filename)
+              media_ids.append(res.media_id)
+
+          f_status = open(CONF_PATH_FILE_CURRENT_VIDEO_META, 'r')
+          status = f_status.read()
+          f_status.close()
+
+          # Clean file to not upload until the next 
+          f_clean = open(CONF_PATH_FILE_CURRENT_VIDEO_META, 'w')
+          f_clean.write("")
+          f_clean.close()
+
+          self.api.update_status(status=status,media_ids=media_ids)
+
+          log.msg('publish (Images published)')
+          return True
+
+        except:
+          log.error("publish (Images can't be published)")
+          return False
