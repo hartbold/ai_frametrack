@@ -1,4 +1,4 @@
-import cv2
+# import cv2
 import os
 
 from config import *
@@ -39,14 +39,14 @@ class FrameManager:
         return True
 
     @staticmethod
-    def variance_of_laplacian(image):
-        return cv2.Laplacian(image, cv2.CV_64F).var()
+    # def variance_of_laplacian(image):
+    #     return cv2.Laplacian(image, cv2.CV_64F).var()
 
     # Defining the function to delete the blurry images
-    def delete_blurry_images(self, path):
-        for file in os.listdir(path):
-            image = cv2.imread(os.path.join(path, file))
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            fm = FrameManager.variance_of_laplacian(gray)
-            if fm < 100:
-                os.remove(os.path.join(path, file))
+    # def delete_blurry_images(self, path):
+    #     for file in os.listdir(path):
+    #         image = cv2.imread(os.path.join(path, file))
+    #         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    #         fm = FrameManager.variance_of_laplacian(gray)
+    #         if fm < 100:
+    #             os.remove(os.path.join(path, file))
