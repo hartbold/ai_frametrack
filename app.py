@@ -1,4 +1,3 @@
-from config import CONF_PATH_FOLDER_FRAMES
 from objects.TwitterBot import TwitterBot
 from objects.VideoScrapper import VideoScrapper
 from objects.FrameManager import FrameManager
