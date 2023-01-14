@@ -128,7 +128,9 @@ class VideoScrapper:
             log.error('get_video_3p_url (Cant find video ID - Empty)')
             return ''
 
-        req = Request(VideoScrapper.BASE_URL_3P + video_id, None, VideoScrapper.HEADERS)
+        url = VideoScrapper.BASE_URL_3P + video_id
+        log.msg('get_video_3p_url (Calling: '+url+')')
+        req = Request(url, None, VideoScrapper.HEADERS)
         resp = urlopen(req)
         r_json = json.loads(resp.read())
 
