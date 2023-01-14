@@ -33,6 +33,9 @@ class TwitterBot():
 
           media_ids = []
 
+          fjoin = ','.join(str(x) for x in frames)
+          log.msg("punlish (Frames to upload: "+fjoin+")")
+
           for filename in frames:
               res = self.api.media_upload(CONF_PATH_FOLDER_FRAMES + filename)
               media_ids.append(res.media_id)

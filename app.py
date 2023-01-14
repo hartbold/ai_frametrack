@@ -1,8 +1,9 @@
+#! /usr/bin/python3
+
 from objects.TwitterBot import TwitterBot
 from objects.VideoScrapper import VideoScrapper
 from objects.FrameManager import FrameManager
 from objects.Logs import Logs as log
-
 
 tw = TwitterBot()
 vt = FrameManager()
