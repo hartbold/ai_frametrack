@@ -157,6 +157,8 @@ class VideoScrapper:
             file.write(title + "\nDurada: " + durada + " - Emissio: " + dataemisio[0] + "")
             file.close()
 
+            log.msg("get_video_3p_url (Metadata saved)")
+
         except:
             log.error('get_video_3p_url (Cant retrieve metadata)')
         # ---
@@ -170,7 +172,9 @@ class VideoScrapper:
             try:
                 url_video = urldic['file']
 
-                r = requests.get(url_video, timeout=10)
+                log.msg("get_video_3p_url (Try get: "+url_video+")")
+
+                r = requests.get(url_video)
 
                 if r.status_code != 200:
                     log.error('get_video_3p_url (Cant retrieve video URL='+url_video+' in 10)')
