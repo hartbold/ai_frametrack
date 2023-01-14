@@ -174,29 +174,29 @@ class VideoScrapper:
             if url_out != '':
                 pass
 
-            try:
-                url_video = urldic.file # urldic['file']
+            # try:
+            url_video = urldic['file']
 
-                log.msg("get_video_3p_url (Try get: "+url_video+")")
+            log.msg("get_video_3p_url (Try get: "+url_video+")")
 
-                r = Request(url_video, None, VideoScrapper.HEADERS)
+            r = Request(url_video, None, VideoScrapper.HEADERS)
 
-                if r.status_code == 200:
-                    url_out = url_video
+            if r.status_code == 200:
+                url_out = url_video
 
-                    file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
-                    file.write(url_out + "\n")
-                    file.close()
+                file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
+                file.write(url_out + "\n")
+                file.close()
 
-                    return url_out
+                return url_out
 
-                else:
-                    log.error('get_video_3p_url (Cant retrieve video URL='+url_video+' in 10)')
+            else:
+                log.error('get_video_3p_url (Cant retrieve video URL='+url_video+' in 10)')
 
-            except:
-                log.error(urldic)
-                log.error('get_video_3p_url (Cant get `file` from urldic)')
-                pass
+            # except:
+            #     log.error(urldic)
+            #     log.error('get_video_3p_url (Cant get `file` from urldic)')
+            #     pass
 
         return url_out
 
