@@ -174,7 +174,7 @@ class VideoScrapper:
 
                 log.msg("get_video_3p_url (Try get: "+url_video+")")
 
-                r = requests.get(url_video)
+                r = Request(url_video, None, VideoScrapper.HEADERS)
 
                 if r.status_code != 200:
                     log.error('get_video_3p_url (Cant retrieve video URL='+url_video+' in 10)')
