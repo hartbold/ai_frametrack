@@ -176,15 +176,17 @@ class VideoScrapper:
 
                 r = Request(url_video, None, VideoScrapper.HEADERS)
 
-                if r.status_code != 200:
+                if r.status_code == 200:
+                    url_out = url_video
+
+                    file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
+                    file.write(url_out + "\n")
+                    file.close()
+
+                    return url_out
+
+                else:
                     log.error('get_video_3p_url (Cant retrieve video URL='+url_video+' in 10)')
-                    pass
-
-                url_out = url_video
-
-                file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
-                file.write(url_out + "\n")
-                file.close()
 
             except:
                 log.error(urldic)
