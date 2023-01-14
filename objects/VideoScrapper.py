@@ -179,9 +179,10 @@ class VideoScrapper:
 
             log.msg("get_video_3p_url (Try get: "+url_video+")")
 
-            r = Request(url_video, None, VideoScrapper.HEADERS)
+            reqbar = Request(url_video, None, VideoScrapper.HEADERS)
+            resfoo = urlopen(reqbar)
 
-            if r.status_code == 200:
+            if resfoo.status_code == 200:
                 url_out = url_video
 
                 file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
