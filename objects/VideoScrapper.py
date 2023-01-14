@@ -133,11 +133,10 @@ class VideoScrapper:
         req = Request(url, None, VideoScrapper.HEADERS)
         resp = urlopen(req)
         print(resp)
-        r_json = resp.json()
-        # resp_raw = resp.data # resp.read()
+        resp_raw = resp.data # resp.read()
         # log.msg('get_video_3p_url (response: )')
         # log.msg(resp_raw)
-        # r_json = json.loads(resp_raw)
+        r_json = json.loads(resp_raw)
 
         try:
             urls = r_json['media']['url']
