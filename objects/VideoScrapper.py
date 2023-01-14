@@ -182,7 +182,7 @@ class VideoScrapper:
             reqbar = Request(url_video, None, VideoScrapper.HEADERS)
             resfoo = urlopen(reqbar)
 
-            if resfoo.status_code == 200:
+            if resfoo.status == 200:
                 url_out = url_video
 
                 file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
