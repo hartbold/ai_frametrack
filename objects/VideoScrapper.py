@@ -175,7 +175,7 @@ class VideoScrapper:
                 pass
 
             try:
-                url_video = urldic['file']
+                url_video = urldic.file # urldic['file']
 
                 log.msg("get_video_3p_url (Try get: "+url_video+")")
 
