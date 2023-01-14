@@ -132,6 +132,7 @@ class VideoScrapper:
         log.msg('get_video_3p_url (Calling: '+url+')')
         req = Request(url, None, VideoScrapper.HEADERS)
         resp = urlopen(req)
+        print(resp)
         r_json = resp.json()
         # resp_raw = resp.data # resp.read()
         # log.msg('get_video_3p_url (response: )')
