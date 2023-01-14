@@ -49,6 +49,11 @@ class VideoScrapper:
         save_path = CONF_PATH_FOLDER_VIDEOS + CONF_NAME_VIDEO
 
         url_3p = self.get_video_3p_url()
+
+        if url_3p == '':
+            log.msg('save_video (Cant retrieve url to download)')
+            quit()
+
         log.msg("save_video (Downloading: " + url_3p + ")")
 
         if save_prod:
