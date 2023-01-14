@@ -179,7 +179,7 @@ class VideoScrapper:
                 url_out = url_video
 
                 file = open(CONF_PATH_FILE_VIDEO_URLS, "a")
-                file.write(url_out)
+                file.write(url_out + "\n")
                 file.close()
 
             except:
