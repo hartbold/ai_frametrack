@@ -14,7 +14,7 @@ CONF_IX_FIRST_VIDEO = -1
 CONF_IX_FIRST_PAGE = 128
 
 CONF_PATH_FOLDER_VIDEOS = os.environ["TMP"] + "/" # str(os.getenv("SERVER_FOLDER_VID_PATH"))
-CONF_PATH_FOLDER_FRAMES = os.environ["PWD"] + "/frames/" # str(os.getenv("SERVER_FOLDER_FRAMES_PATH"))
+CONF_PATH_FOLDER_FRAMES = os.environ["TMP"] + "/frames/" # str(os.getenv("SERVER_FOLDER_FRAMES_PATH"))
 
 CONF_TW_CONSUMER_KEY = str(os.getenv("TW_CON_KEY"))
 CONF_TW_CONSUMER_SECRET = str(os.getenv("TW_CON_KEY_SEC"))
