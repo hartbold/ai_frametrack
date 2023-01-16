@@ -23,10 +23,10 @@ CONF_TW_ACCESS_TOKEN_SECRET = str(os.getenv("TW_ACC_TOK_SEC"))
 
 if not os.path.exists(CONF_PATH_FOLDER_VIDEOS):
     log.msg("")
-    os.mkdir(CONF_PATH_FOLDER_VIDEOS, 0o666)
+    os.mkdir(CONF_PATH_FOLDER_VIDEOS, 0o777)
 
 if not os.path.exists(CONF_PATH_FOLDER_FRAMES):
-    os.mkdir(CONF_PATH_FOLDER_FRAMES, 0o666)
+    os.mkdir(CONF_PATH_FOLDER_FRAMES, 0o777)
 
 if not os.path.isfile(CONF_PATH_FILE_IX):
     f = open(CONF_PATH_FILE_IX, 'w')
