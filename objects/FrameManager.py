@@ -15,7 +15,7 @@ class FrameManager:
         try:
             log.msg("treat_video (Treating: "+v_path+")")
             vid = VideoFileClip(v_path)
-            vid.write_images_sequence(CONF_PATH_FOLDER_FRAMES + 'frame_%04d.jpg', 0.008)
+            vid.write_images_sequence(CONF_PATH_FOLDER_FRAMES + 'frame_%04d.jpg', 0.01)
             log.msg("treat_video (Frames saved at: "+CONF_PATH_FOLDER_FRAMES+")")
 
             # self.delete_blurry_images(CONF_PATH_FOLDER_FRAMES)
