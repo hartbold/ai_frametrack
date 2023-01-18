@@ -32,7 +32,18 @@ class FrameManager:
 
     def get_next_frames(self,n_frames=2):
         frames = os.listdir(CONF_PATH_FOLDER_FRAMES)
-        return frames[0:n_frames]
+
+        fjoin = ','.join(str(x) for x in frames)
+        log.msg("Total frames: " + fjoin)
+
+        out_frames = []
+        for frame in frames:
+            if len(out_frames) == 2:
+                break
+
+            out_frames.append(frame)
+
+        return out_frames
 
     def delete_frame(self, frame_path):
         os.remove(CONF_PATH_FOLDER_FRAMES+frame_path)
