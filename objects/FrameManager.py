@@ -31,7 +31,7 @@ class FrameManager:
             log.error("treat_video (Couldnt delete video)")
 
     def get_next_frames(self,n_frames=2):
-        frames = os.listdir(CONF_PATH_FOLDER_FRAMES)
+        frames = sorted(os.listdir(CONF_PATH_FOLDER_FRAMES))
 
         fjoin = ','.join(str(x) for x in frames)
         log.msg("Total frames: " + fjoin)
