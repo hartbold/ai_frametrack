@@ -157,9 +157,11 @@ class VideoScrapper:
             title = r_json['informacio']['titol']
             durada = r_json['informacio']['durada']['text']
             dataemisio = r_json['informacio']['data_emissio']['text'].split()
+            metatitle = "El cor de la ciutat"
+            hashtags = "#tv3 #elcor #elcordelaciutat #ecdlc"
 
             file = open(CONF_PATH_FILE_CURRENT_VIDEO_META, "w")
-            file.write(title + "\nDurada: " + durada + " - Emissio: " + dataemisio[0] + "")
+            file.write(metatitle + "\n" + title + "\nDurada: " + durada + " - Emissio: " + dataemisio[0] + "\n" + hashtags)
             file.close()
 
             log.msg("get_video_3p_url (Metadata saved)")
